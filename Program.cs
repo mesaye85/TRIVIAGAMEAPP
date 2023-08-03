@@ -62,7 +62,7 @@ if (!app.Environment.IsDevelopment())
     // The following line enables application to use Https
     app.UseHsts();
 }
-
+app.UseRouting();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();

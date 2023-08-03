@@ -22,6 +22,21 @@ public class UserController : ControllerBase
         _users = database.GetCollection<User>("TriviaGame");
         _configuration = configuration;
     }
+    
+[HttpGet]
+public IActionResult TestDatabase()
+{
+    try
+    {
+        var database = _mongoDbService.GetDatabase();
+        var collections = database.ListCollectionNames().ToList();
+        return Ok(new { message = "Database connected successfully!", collections = collections });
+    }
+    catch (Exception ex)
+    {
+        return BadRequest(new { message = $"Error connecting to the database: {ex.Message}" });
+    }
+}
 
     [HttpPost("register")]
     public async Task<IActionResult> Register(UserDto userDto)
