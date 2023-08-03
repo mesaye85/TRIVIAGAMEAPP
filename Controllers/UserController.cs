@@ -21,11 +21,13 @@ public class UserController : ControllerBase
     {
         _users = database.GetCollection<User>("TriviaGame");
         _configuration = configuration;
+        _logger = logger;
+        
     }
-
-
-    [HttpPost("register")]
-    public async Task<IActionResult> Register(UserDto userDto)
+[HttpPost("register")]
+public async Task<IActionResult> Register(UserDto userDto)
+{
+    try
     {
         var user = new User
         {
@@ -37,6 +39,16 @@ public class UserController : ControllerBase
 
         return Ok(new { Message = "User registered successfully" });
     }
+    catch (Exception ex)
+    {
+        // log exception here
+        _logger.LogError(ex, "Error occurred while registering user");
+
+        return StatusCode(500, new { Message = "An error occurred, please try again" });
+    }
+}
+
+
 
     [HttpPost("login")]
     public async Task<IActionResult> Login(UserDto userDto)
