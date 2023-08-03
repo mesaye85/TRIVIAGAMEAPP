@@ -1,16 +1,19 @@
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
+using System.ComponentModel.DataAnnotations;
 
-namespace TriviaGameApp.Models;
-public class User
+namespace TriviaGameApp.Models
 {
-    [BsonId]
-    [BsonRepresentation(BsonType.ObjectId)]
-    public string Id { get; set; }
+    public class User
+    {
+        [Key] // The Key attribute denotes the primary key
+        public int Id { get; set; }
 
-    [BsonElement("Email")]
-    public string Email { get; set; }
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; }
 
-    [BsonElement("Password")]
-    public string Password { get; set; }
+        [Required]
+        public string Password { get; set; }
+
+        // other properties here
+    }
 }

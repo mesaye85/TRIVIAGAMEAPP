@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Driver;
+using Microsoft.EntityFrameworkCore;
 using BCrypt.Net;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -9,51 +9,58 @@ using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Configuration;
 using TriviaGameApp.Models;
+using Microsoft.Extensions.Logging;
+using TriviaGameApp.Data;
 
 [ApiController]
 [Route("api/v1/users")]
 public class UserController : ControllerBase
 {
-    private readonly IMongoCollection<User> _users;
-    private readonly IConfiguration _configuration;
 
-    public UserController(IMongoDatabase database, IConfiguration configuration)
+    private readonly TriviaDBContext _context;
+    private readonly IConfiguration _configuration;
+    private readonly ILogger<UserController> _logger;
+
+    public UserController(TriviaDBContext context, IConfiguration configuration, ILogger<UserController> logger) // added logger parameter
     {
-        _users = database.GetCollection<User>("TriviaGame");
+        _context = context;
         _configuration = configuration;
         _logger = logger;
-        
     }
-[HttpPost("register")]
-public async Task<IActionResult> Register(UserDto userDto)
-{
-    try
+
+    [HttpPost("register")]
+    public async Task<IActionResult> Register(UserDto userDto)
     {
-        var user = new User
+        try
         {
-            Email = userDto.Email,
-            Password = BCrypt.Net.BCrypt.HashPassword(userDto.Password),
-        };
+            var existingUser = await _context.Users.SingleOrDefaultAsync(u => u.Email == userDto.Email);
+            if (existingUser != null)
+                return BadRequest(new { Message = "Email is already registered" });
 
-        await _users.InsertOneAsync(user);
+            var user = new User
+            {
+                Email = userDto.Email,
+                Password = BCrypt.Net.BCrypt.HashPassword(userDto.Password),
+            };
 
-        return Ok(new { Message = "User registered successfully" });
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { Message = "User registered successfully" });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while registering user");
+
+            return StatusCode(500, new { Message = "An error occurred, please try again" });
+        }
     }
-    catch (Exception ex)
-    {
-        // log exception here
-        _logger.LogError(ex, "Error occurred while registering user");
-
-        return StatusCode(500, new { Message = "An error occurred, please try again" });
-    }
-}
-
 
 
     [HttpPost("login")]
     public async Task<IActionResult> Login(UserDto userDto)
     {
-        var user = await _users.Find(u => u.Email == userDto.Email).FirstOrDefaultAsync();
+        var user = await _context.Users.SingleOrDefaultAsync(u => u.Email == userDto.Email);
 
         if (user == null || !BCrypt.Net.BCrypt.Verify(userDto.Password, user.Password))
         {
@@ -68,9 +75,8 @@ public async Task<IActionResult> Register(UserDto userDto)
             {
             new Claim("id", user.Id.ToString()),
             new Claim(JwtRegisteredClaimNames.Email, user.Email),
-            // You can add more claims if needed
-        }),
-            Expires = DateTime.UtcNow.AddHours(6), // Token expiration, you can set it to whatever you want
+            }),
+            Expires = DateTime.UtcNow.AddHours(6),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
         };
         var token = tokenHandler.CreateToken(tokenDescriptor);

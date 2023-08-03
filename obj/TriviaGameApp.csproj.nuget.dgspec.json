@@ -47,9 +47,25 @@
               "target": "Package",
               "version": "[7.0.9, )"
             },
-            "MongoDB.Driver": {
+            "Microsoft.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[2.20.0, )"
+              "version": "[7.0.9, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[7.0.9, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "target": "Package",
+              "version": "[7.0.9, )"
+            },
+            "Microsoft.IdentityModel.Tokens": {
+              "target": "Package",
+              "version": "[6.21.0, )"
+            },
+            "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
+              "target": "Package",
+              "version": "[7.0.1, )"
             }
           },
           "imports": [

@@ -1,47 +1,57 @@
 using System;
 using System.Threading.Tasks;
-using MongoDB.Driver;
-using MongoDB.Bson;
 using TriviaGameApp.Models;
+using Microsoft.EntityFrameworkCore;
+
 namespace TriviaGameApp.Services
 {
     public class UserService
     {
-        private readonly IMongoCollection<User> _users;
+        private readonly TriviaDBContext _context;
 
-        public UserService(IMongoDatabase database)
+        public UserService(TriviaDBContext dbContext)
         {
-            _users = database.GetCollection<User>("TriviaGame");
+            _context = dbContext;
         }
 
         public async Task<User> GetByEmailAsync(string email)
         {
-            var filter = Builders<User>.Filter.Eq(u => u.Email, email);
-            return await _users.Find(filter).FirstOrDefaultAsync();
+            return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
         }
 
         public async Task<User> CreateAsync(User user)
         {
-            await _users.InsertOneAsync(user);
+            await _context.Users.AddAsync(user);
+            await _context.SaveChangesAsync();
             return user;
         }
 
         public async Task UpdateAsync(string id, User userIn)
         {
-            var filter = Builders<User>.Filter.Eq(u => u.Id, id);
-            await _users.ReplaceOneAsync(filter, userIn);
+            var user = await _context.Users.FindAsync(id);
+            if (user != null)
+            {
+                user.Email = userIn.Email;
+                user.Password = userIn.Password;
+                // Set other properties here as needed
+                await _context.SaveChangesAsync();
+            }
         }
 
         public async Task RemoveAsync(User userIn)
         {
-            var filter = Builders<User>.Filter.Eq(u => u.Id, userIn.Id);
-            await _users.DeleteOneAsync(filter);
+            _context.Users.Remove(userIn);
+            await _context.SaveChangesAsync();
         }
 
         public async Task RemoveAsync(string id)
         {
-            var filter = Builders<User>.Filter.Eq(u => u.Id, id);
-            await _users.DeleteOneAsync(filter);
+            var user = await _context.Users.FindAsync(id);
+            if (user != null)
+            {
+                _context.Users.Remove(user);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

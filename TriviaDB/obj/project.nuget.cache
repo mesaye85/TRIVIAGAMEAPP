@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "RBSGvKoe3GvxzD2adWpSgivddoAsXMG3d3W/4Jk9fN6mhOQRTGEkwGv5W4pdDhJ3KqYuWevvPVy/2OhGsc30Ew==",
+  "success": true,
+  "projectFilePath": "/Users/mesayeaddisu/TriviaGameApp/TriviaDB/TriviaDB.sqlproj",
+  "expectedPackageFiles": [
+    "/Users/mesayeaddisu/.nuget/packages/microsoft.netframework.referenceassemblies/1.0.0/microsoft.netframework.referenceassemblies.1.0.0.nupkg.sha512",
+    "/Users/mesayeaddisu/.nuget/packages/microsoft.netframework.referenceassemblies.net46/1.0.0/microsoft.netframework.referenceassemblies.net46.1.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

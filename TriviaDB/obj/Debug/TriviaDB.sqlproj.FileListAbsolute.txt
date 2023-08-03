@@ -1,0 +1,9 @@
+/Users/mesayeaddisu/TriviaGameApp/TriviaDB/bin/Debug/TriviaDB.dacpac
+/Users/mesayeaddisu/TriviaGameApp/TriviaDB/bin/Debug/TriviaDB.dll
+/Users/mesayeaddisu/TriviaGameApp/TriviaDB/bin/Debug/TriviaDB.pdb
+/Users/mesayeaddisu/TriviaGameApp/TriviaDB/obj/Debug/Model.xml
+/Users/mesayeaddisu/TriviaGameApp/TriviaDB/obj/Debug/refactor.xml
+/Users/mesayeaddisu/TriviaGameApp/TriviaDB/obj/Debug/postdeploy.sql
+/Users/mesayeaddisu/TriviaGameApp/TriviaDB/obj/Debug/predeploy.sql
+/Users/mesayeaddisu/TriviaGameApp/TriviaDB/obj/Debug/TriviaDB.dll
+/Users/mesayeaddisu/TriviaGameApp/TriviaDB/obj/Debug/TriviaDB.pdb
