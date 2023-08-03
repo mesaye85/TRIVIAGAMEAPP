@@ -30,7 +30,7 @@ var mongoUrl = new MongoUrl(builder.Configuration["MongoDB:ConnectionString"]);
 builder.Services.AddSingleton<IMongoDatabase>(s =>
 {
     var mongoClient = s.GetService<IMongoClient>();
-    return mongoClient.GetDatabase(builder.Configuration["TriviaGame"]);
+    return mongoClient.GetDatabase(builder.Configuration["MongoDBSettings:DatabaseName"]);
 });
 builder.Services.AddAuthentication(options =>
 {
